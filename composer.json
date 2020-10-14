@@ -1,0 +1,28 @@
+{
+    "name" : "supianidz/laravel-datatable",
+    "description" : "Yajra Data Table Wrapper",
+    "type" : "library",
+    "license" : "MIT",
+    "authors" : [
+        {
+            "name" : "SupianIDz",
+            "email" : "supianidz@gmail.com"
+        }
+    ],
+    "require" : {
+        "php" : "^7.4",
+        "yajra/laravel-datatables-oracle" : "^v9.11"
+    },
+    "autoload" : {
+        "psr-4" : {
+            "Octopy\\DataTable\\" : "src/"
+        }
+    },
+    "config" : {
+        "optimize-autoloader" : true,
+        "preferred-install" : "dist",
+        "sort-packages" : true
+    },
+    "minimum-stability" : "dev",
+    "prefer-stable" : true
+}
