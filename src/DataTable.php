@@ -85,7 +85,7 @@ abstract class DataTable
      */
     protected function isDebugActive()
     {
-        return $this->request->has('debug') && $this->request->debug === true;
+        return $this->request->has('debug') && ($this->request->debug === 'true' || $this->request->debug === 1);
     }
 
     /**
