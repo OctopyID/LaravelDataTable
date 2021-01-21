@@ -25,11 +25,6 @@ abstract class DataTable
 	protected bool $debug = false;
 	
 	/**
-	 * @var string
-	 */
-	protected string $compiler = 'blade';
-	
-	/**
 	 * @var Request
 	 */
 	protected Request $request;
@@ -52,13 +47,11 @@ abstract class DataTable
 	public function render(string $view, $data = [])
 	{
 		if (! $this->isDebugActive() && ! $this->request->ajax()) {
-			if ($this->compiler === 'blade') {
-				return view($view, $this->data($data));
-			} else if ($this->compiler === 'inertia' || $this->compiler === 'vue') {
-				return $this->inertia($view, $data);
-			}
-			
-			throw new RuntimeException('We currently only support Blade and Vue/Inertia.');
+			return view($view, $this->data($data));
+		}
+		
+		if ($this->request->ajax() && $this->request->hasHeader('X-Inertia')) {
+			return $this->inertia($view, $data);
 		}
 		
 		try {
