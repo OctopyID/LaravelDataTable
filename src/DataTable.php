@@ -5,6 +5,8 @@ namespace Octopy\DataTable;
 
 use Closure;
 use Exception;
+use RuntimeException;
+use Inertia\Response;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\App;
@@ -21,6 +23,11 @@ abstract class DataTable
 	 * @var bool
 	 */
 	protected bool $debug = false;
+	
+	/**
+	 * @var string
+	 */
+	protected string $compiler = 'blade';
 	
 	/**
 	 * @var Request
@@ -45,7 +52,13 @@ abstract class DataTable
 	public function render(string $view, $data = [])
 	{
 		if (! $this->isDebugActive() && ! $this->request->ajax()) {
-			return view($view, $this->data($data));
+			if ($this->compiler === 'blade') {
+				return view($view, $this->data($data));
+			} else if ($this->compiler === 'inertia' || $this->compiler === 'vue') {
+				return $this->inertia($view, $data);
+			}
+			
+			throw new RuntimeException('We currently only support Blade and Vue/Inertia.');
 		}
 		
 		try {
@@ -86,6 +99,25 @@ abstract class DataTable
 		}
 		
 		return $data;
+	}
+	
+	/**
+	 * @param  string|Response $view
+	 * @param  array           $data
+	 * @return Response
+	 */
+	private function inertia($view, array $data) : Response
+	{
+		if (is_string($view)) {
+			
+			if (! function_exists('inertia')) {
+				throw new RuntimeException('Please make sure Inertia libraries are installed.');
+			}
+			
+			return inertia($view, $this->data($data));
+		}
+		
+		return $view;
 	}
 	
 	/**
