@@ -1,17 +1,17 @@
 {
-    "name" : "supianidz/laravel-datatable",
+    "name" : "octopyid/laravel-datatable",
     "description" : "Yajra Data Table Wrapper",
     "type" : "library",
     "license" : "MIT",
     "authors" : [
         {
-            "name" : "SupianIDz",
+            "name" : "Supian M",
             "email" : "supianidz@gmail.com"
         }
     ],
     "require" : {
-        "php" : "^7.4",
-        "yajra/laravel-datatables-oracle" : "^v9.11"
+        "php": "^7.4|^8.0",
+        "yajra/laravel-datatables-oracle": "^9.15"
     },
     "autoload" : {
         "psr-4" : {

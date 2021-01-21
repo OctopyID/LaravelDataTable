@@ -8,7 +8,7 @@ To install the package, simply follow the steps below.
 Install the package using Composer:
 
 ```
-$ composer require supianidz/laravel-datatable
+$ composer require octopyid/laravel-datatable
 ```
 
 ## Usage
@@ -21,6 +21,7 @@ namespace App\DataTables;
 
 use App\Models\User;
 use Octopy\DataTable\DataTable;
+use Yajra\DataTables\DataTableAbstract;
 
 class UserDataTable extends DataTable
 {
