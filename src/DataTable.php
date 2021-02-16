@@ -19,114 +19,123 @@ use Yajra\DataTables\DataTableAbstract;
  */
 abstract class DataTable
 {
-	/**
-	 * @var bool
-	 */
-	protected bool $debug = false;
-	
-	/**
-	 * @var string
-	 */
-	protected string $compiler = 'blade';
-	
-	/**
-	 * @var Request
-	 */
-	protected Request $request;
-	
-	/**
-	 * DataTable constructor.
-	 * @param  Request $request
-	 */
-	public function __construct(Request $request)
-	{
-		$this->request = $request;
-	}
-	
-	/**
-	 * @param  string $view
-	 * @param  array  $data
-	 * @return mixed
-	 * @throws DataTableException
-	 */
-	public function render(string $view, $data = [])
-	{
-		if (! $this->isDebugActive() && ! $this->request->ajax()) {
-			if ($this->compiler === 'blade') {
-				return view($view, $this->data($data));
-			} else if ($this->compiler === 'inertia' || $this->compiler === 'vue') {
-				return $this->inertia($view, $data);
-			}
-			
-			throw new RuntimeException('We currently only support Blade and Vue/Inertia.');
-		}
-		
-		if ($this->request->ajax() && $this->request->hasHeader('X-Inertia')) {
-			return $this->inertia($view, $data);
-		}
-		
-		try {
-			$source = App::call([$this, 'query']);
-			
-			if (is_string($source)) {
-				return $source;
-			}
-			
-			$datatable = DataTables::make($source);
-			
-			if (method_exists($this, 'option')) {
-				$this->option($datatable);
-			}
-			
-			return $datatable->make(true);
-		} catch (Exception $exception) {
-			throw new DataTableException($exception->getMessage(), $exception->getCode());
-		}
-	}
-	
-	/**
-	 * @return bool
-	 */
-	protected function isDebugActive() : bool
-	{
-		return $this->request->has('debug') && ($this->request->debug === 'true' || $this->request->debug === 1);
-	}
-	
-	/**
-	 * @param  array $data
-	 * @return array
-	 */
-	protected function data($data) : array
-	{
-		if ($data instanceof Closure) {
-			$data = $data($this->request);
-		}
-		
-		return $data;
-	}
-	
-	/**
-	 * @param  string|Response $view
-	 * @param  array           $data
-	 * @return Response
-	 */
-	private function inertia($view, array $data) : Response
-	{
-		if (is_string($view)) {
-			
-			if (! function_exists('inertia')) {
-				throw new RuntimeException('Please make sure Inertia libraries are installed.');
-			}
-			
-			return inertia($view, $this->data($data));
-		}
-		
-		return $view;
-	}
-	
-	/**
-	 * @param  DataTableAbstract $table
-	 * @return void
-	 */
-	abstract public function option(DataTableAbstract $table) : void;
+    /**
+     * @var bool
+     */
+    protected bool $debug = false;
+
+    /**
+     * @var string
+     */
+    protected string $compiler = 'blade';
+
+    /**
+     * @var Request
+     */
+    protected Request $request;
+
+    /**
+     * DataTable constructor.
+     * @param  Request $request
+     */
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
+    /**
+     * @param  string $view
+     * @param  array  $data
+     * @return mixed
+     * @throws DataTableException
+     */
+    public function render(string $view, $data = [])
+    {
+        if (! $this->isDebugActive() && ! $this->request->ajax()) {
+            if ($this->compiler === 'blade') {
+                return view($view, $this->data($data));
+            } else if ($this->compiler === 'inertia' || $this->compiler === 'vue') {
+                return $this->inertia($view, $data);
+            }
+
+            throw new RuntimeException('We currently only support Blade and Vue/Inertia.');
+        }
+
+        if ($this->request->ajax() && $this->request->hasHeader('X-Inertia')) {
+            return $this->inertia($view, $data);
+        }
+
+        try {
+            return $this->json();
+        } catch (Exception $exception) {
+            throw new DataTableException($exception->getMessage(), $exception->getCode());
+        }
+    }
+
+    /**
+     * @return mixed
+     * @throws Exception
+     * @noinspection PhpUndefinedMethodInspection
+     */
+    public function json()
+    {
+        $source = App::call([$this, 'query']);
+
+        if (is_string($source)) {
+            return $source;
+        }
+
+        $datatable = DataTables::make($source);
+
+        if (method_exists($this, 'option')) {
+            $this->option($datatable);
+        }
+
+        return $datatable->make(true);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isDebugActive() : bool
+    {
+        return $this->request->has('debug') && ($this->request->debug === 'true' || $this->request->debug === 1);
+    }
+
+    /**
+     * @param  array $data
+     * @return array
+     */
+    protected function data($data) : array
+    {
+        if ($data instanceof Closure) {
+            $data = $data($this->request);
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param  string|Response $view
+     * @param  array           $data
+     * @return Response
+     */
+    private function inertia($view, array $data) : Response
+    {
+        if (is_string($view)) {
+            if (! function_exists('inertia')) {
+                throw new RuntimeException('Please make sure Inertia libraries are installed.');
+            }
+
+            return inertia($view, $this->data($data));
+        }
+
+        return $view;
+    }
+
+    /**
+     * @param  DataTableAbstract $table
+     * @return void
+     */
+    abstract public function option(DataTableAbstract $table) : void;
 }
