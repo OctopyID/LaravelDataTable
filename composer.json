@@ -1,29 +1,29 @@
 {
-    "name" : "octopyid/laravel-datatable",
-    "description" : "Yajra Data Table Wrapper",
-    "type" : "library",
-    "license" : "MIT",
-    "authors" : [
+    "name": "octopyid/laravel-datatable",
+    "description": "Yajra Data Table Wrapper",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
         {
-            "name" : "Supian M",
-            "email" : "supianidz@gmail.com"
+            "name": "Supian M",
+            "email": "supianidz@gmail.com"
         }
     ],
-    "require" : {
+    "require": {
         "php": "^7.4|^8.0",
         "laravel/framework": "^v7|^v8",
         "yajra/laravel-datatables-oracle": "^9.18"
     },
-    "autoload" : {
-        "psr-4" : {
-            "Octopy\\DataTable\\" : "src/"
+    "autoload": {
+        "psr-4": {
+            "Octopy\\DataTable\\": "src/"
         }
     },
-    "config" : {
-        "optimize-autoloader" : true,
-        "preferred-install" : "dist",
-        "sort-packages" : true
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
     },
-    "minimum-stability" : "dev",
-    "prefer-stable" : true
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

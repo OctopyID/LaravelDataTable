@@ -5,12 +5,12 @@ namespace Octopy\DataTable;
 
 use Closure;
 use Exception;
-use RuntimeException;
-use Inertia\Response;
 use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\App;
+use Inertia\Response as InertiaResponse;
+use RuntimeException;
 use Yajra\DataTables\DataTableAbstract;
+use Yajra\DataTables\DataTables;
 
 /**
  * Class DataTable
@@ -44,8 +44,8 @@ abstract class DataTable
     }
 
     /**
-     * @param  string $view
-     * @param  array  $data
+     * @param  string        $view
+     * @param  array|Closure $data
      * @return mixed
      * @throws DataTableException
      */
@@ -95,15 +95,29 @@ abstract class DataTable
     }
 
     /**
+     * @param  Request $request
+     * @return mixed
+     */
+    abstract public function query(Request $request);
+
+    /**
+     * @param  DataTableAbstract $table
+     * @return void
+     */
+    abstract public function option(DataTableAbstract $table) : void;
+
+    /**
      * @return bool
      */
     protected function isDebugActive() : bool
     {
-        return $this->request->has('debug') && ($this->request->debug === 'true' || $this->request->debug === 1);
+        return $this->debug && $this->request->has('debug') && (
+                $this->request->debug === 'true' || (int) $this->request->debug === 1
+            );
     }
 
     /**
-     * @param  array $data
+     * @param  array|Closure $data
      * @return array
      */
     protected function data($data) : array
@@ -118,9 +132,9 @@ abstract class DataTable
     /**
      * @param  string|Response $view
      * @param  array           $data
-     * @return Response
+     * @return InertiaResponse
      */
-    private function inertia($view, array $data) : Response
+    private function inertia($view, array $data) : InertiaResponse
     {
         if (is_string($view)) {
             if (! function_exists('inertia')) {
@@ -132,10 +146,4 @@ abstract class DataTable
 
         return $view;
     }
-
-    /**
-     * @param  DataTableAbstract $table
-     * @return void
-     */
-    abstract public function option(DataTableAbstract $table) : void;
 }
