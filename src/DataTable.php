@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Inertia\Response as InertiaResponse;
+use Octopy\DataTable\Exceptions\DataTableException;
 use Yajra\DataTables\DataTableAbstract;
 use Yajra\DataTables\DataTables;
 

@@ -1,7 +1,6 @@
 # Laravel DataTable
 
-Laravel DataTable is a wrapper class for Yajra DataTable, this class is intended to separate queries and config on yajra datatable and call blade view as well as function as json
-responders when called with ajax.
+Laravel DataTable is a wrapper class for Yajra DataTable, this class is intended to separate query and configuration on yajra datatable and call blade view and serve as json responders when called with ajax to make clean code.
 
 ## Installation
 
@@ -14,6 +13,16 @@ $ composer require octopyid/laravel-datatable
 ```
 
 ## Usage
+
+```bash
+$ artisan make:datatable UserDataTable
+```
+
+Or with the --model option to apply the model to the datatable automatically
+
+```bash
+$ artisan make:datatable UserDataTable --model=User
+```
 
 ##### UserDataTable.php
 
@@ -29,10 +38,9 @@ use Yajra\DataTables\DataTableAbstract;
 class UserDataTable extends DataTable
 {
     /**
-     * @param  FooBarBaz $baz
      * @return mixed
      */
-    public function query(FooBarBaz $baz)
+    public function query()
     {
         return User::query();
     }
@@ -86,7 +94,7 @@ see [Yajra DataTable Doc](https://yajrabox.com/docs/laravel-datatables/master/).
 
 ## Security
 
-If you discover any security related issues, please email [supianidz@gmail.com](mailto:supianidz@gmail.com) or [supianidz@octopy.id](mailto:me@octopy.id) instead of using the issue
+If you discover any security related issues, please email [supianidz@gmail.com](mailto:supianidz@gmail.com) or [supianidz@octopy.id](mailto:supianidz@octopy.id) instead of using the issue
 tracker.
 
 ## Credits
@@ -97,9 +105,3 @@ tracker.
 ## License
 
 The MIT License (MIT). Please see [License File](https://github.com/SupianIDz/LaraDataTable/blob/master/LICENSE) for more information.
-
-## Change Logs
-
-### v1.0.0
-
-- Initial release.

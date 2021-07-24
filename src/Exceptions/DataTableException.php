@@ -1,6 +1,6 @@
 <?php
 
-namespace Octopy\DataTable;
+namespace Octopy\DataTable\Exceptions;
 
 use Exception;
 

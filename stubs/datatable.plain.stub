@@ -1,0 +1,25 @@
+<?php
+
+namespace {{ namespace }};
+
+use Octopy\DataTable\DataTable;
+use Yajra\DataTables\DataTableAbstract;
+
+class {{ class }} extends DataTable
+{
+    /**
+     * @return mixed
+     */
+    public function query()
+    {
+        //
+    }
+
+    /**
+     * @param  DataTableAbstract $table
+     */
+    public function option(DataTableAbstract $table) : void
+    {
+        //
+    }
+}
