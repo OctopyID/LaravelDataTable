@@ -8,7 +8,6 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Inertia\Response as InertiaResponse;
-use RuntimeException;
 use Yajra\DataTables\DataTableAbstract;
 use Yajra\DataTables\DataTables;
 
@@ -19,16 +18,6 @@ use Yajra\DataTables\DataTables;
  */
 abstract class DataTable
 {
-    /**
-     * @var bool
-     */
-    protected bool $debug = false;
-
-    /**
-     * @var string
-     */
-    protected string $compiler = 'blade';
-
     /**
      * @var Request
      */
@@ -52,17 +41,7 @@ abstract class DataTable
     public function render(string $view, $data = [])
     {
         if (! $this->isDebugActive() && ! $this->request->ajax()) {
-            if ($this->compiler === 'blade') {
-                return view($view, $this->data($data));
-            } else if ($this->compiler === 'inertia' || $this->compiler === 'vue') {
-                return $this->inertia($view, $data);
-            }
-
-            throw new RuntimeException('We currently only support Blade and Vue/Inertia.');
-        }
-
-        if ($this->request->ajax() && $this->request->hasHeader('X-Inertia')) {
-            return $this->inertia($view, $data);
+            return view($view, $this->data($data));
         }
 
         try {
@@ -73,11 +52,32 @@ abstract class DataTable
     }
 
     /**
+     * @param  string|Response $view
+     * @param  array           $data
+     * @return InertiaResponse
+     */
+    public function inertia($view, array $data) : InertiaResponse
+    {
+        return inertia($view, $this->data($data));
+    }
+
+    /**
+     * @return mixed
+     */
+    abstract protected function query();
+
+    /**
+     * @param  DataTableAbstract $table
+     * @return void
+     */
+    abstract protected function option(DataTableAbstract $table) : void;
+
+    /**
      * @return mixed
      * @throws Exception
      * @noinspection PhpUndefinedMethodInspection
      */
-    public function json()
+    private function json()
     {
         $source = App::call([$this, 'query']);
 
@@ -95,55 +95,23 @@ abstract class DataTable
     }
 
     /**
-     * @param  Request $request
-     * @return mixed
-     */
-    abstract public function query(Request $request);
-
-    /**
-     * @param  DataTableAbstract $table
-     * @return void
-     */
-    abstract public function option(DataTableAbstract $table) : void;
-
-    /**
      * @return bool
      */
-    protected function isDebugActive() : bool
+    private function isDebugActive() : bool
     {
-        return $this->debug && $this->request->has('debug') && (
-                $this->request->debug === 'true' || (int) $this->request->debug === 1
-            );
+        return config('app.debug', false);
     }
 
     /**
      * @param  array|Closure $data
      * @return array
      */
-    protected function data($data) : array
+    private function data($data) : array
     {
         if ($data instanceof Closure) {
             $data = $data($this->request);
         }
 
         return $data;
-    }
-
-    /**
-     * @param  string|Response $view
-     * @param  array           $data
-     * @return InertiaResponse
-     */
-    private function inertia($view, array $data) : InertiaResponse
-    {
-        if (is_string($view)) {
-            if (! function_exists('inertia')) {
-                throw new RuntimeException('Please make sure Inertia libraries are installed.');
-            }
-
-            return inertia($view, $this->data($data));
-        }
-
-        return $view;
     }
 }
