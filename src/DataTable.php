@@ -100,7 +100,7 @@ abstract class DataTable
      */
     private function isDebugActive() : bool
     {
-        return config('app.debug', false);
+        return config('app.debug', false) && $this->request->has('debug') && $this->request->debug === 'true';
     }
 
     /**
