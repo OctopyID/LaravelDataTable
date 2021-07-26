@@ -79,6 +79,14 @@ class UserController extends Controller
 }
 ```
 
+## Debug
+
+Sometimes we need to see the response in JSON form to debug, just add the query `debug=true` in the url and `ENV_DEBUG=true`, then the response will be in json.
+
+```
+https://foobar.example/panel/users?debug=true
+```
+
 ## Explanation
 
 ### query
